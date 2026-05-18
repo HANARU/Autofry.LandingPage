@@ -975,6 +975,210 @@
     .stat-item + .stat-item { border-left: none; border-top: 1px solid oklch(40% 0.04 248); }
     .stats-bar { flex-direction: column; gap: 0; }
   }
+
+  /* LIFT CYCLE VIZ */
+  .lift-cycle-viz {
+    margin: 48px 0 64px;
+    --lcv-ease: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  .lcv-header { margin-bottom: 24px; }
+  .lcv-intro {
+    font-size: 15px;
+    color: var(--text-mid);
+    font-weight: 300;
+    line-height: 1.8;
+    margin-top: 4px;
+  }
+  .lcv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .lcv-panel {
+    background: var(--white);
+    border: 1px solid oklch(91% 0.01 248);
+    border-radius: 10px;
+    padding: 24px 24px 20px;
+    position: relative;
+  }
+  .lcv-chip {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+  }
+  .lcv-stage {
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* SVG internals */
+  .lcv-rail { stroke: oklch(86% 0.01 248); stroke-width: 1; stroke-dasharray: 2 3; }
+  .lcv-tank { fill: oklch(96% 0.005 248); stroke: var(--navy); stroke-width: 1.5; }
+  .lcv-oil { fill: var(--gold-light); opacity: 0.78; }
+  .lcv-oil-surface { stroke: var(--gold); stroke-width: 1.2; opacity: 0.55; }
+  .lcv-basket-body { fill: oklch(94% 0.005 248); stroke: var(--text-mid); stroke-width: 1.2; }
+  .lcv-basket-mesh { stroke: var(--text-mid); stroke-width: 0.55; opacity: 0.55; }
+  .lcv-basket-handle {
+    stroke: var(--text-mid);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    transform-origin: 100px 8px;
+    will-change: transform;
+  }
+  .lcv-basket-grip { fill: var(--navy); }
+  .lcv-steam circle { fill: oklch(90% 0.01 248); opacity: 0; }
+
+  /* Basket motion */
+  .lcv-basket { will-change: transform; }
+  .lcv-panel--one .lcv-basket { animation: lcvLiftOne 8s var(--lcv-ease) infinite; }
+  .lcv-panel--two .lcv-basket { animation: lcvLiftTwo 12s var(--lcv-ease) infinite; }
+  @keyframes lcvLiftOne {
+    0%, 100% { transform: translateY(0); }
+    10%      { transform: translateY(130px); }
+    80%      { transform: translateY(130px); }
+    90%      { transform: translateY(0); }
+  }
+  @keyframes lcvLiftTwo {
+    0%, 100% { transform: translateY(0); }
+    7%       { transform: translateY(130px); }
+    35%      { transform: translateY(130px); }
+    42%      { transform: translateY(0); }
+    55%      { transform: translateY(0); }
+    62%      { transform: translateY(130px); }
+    88%      { transform: translateY(130px); }
+    95%      { transform: translateY(0); }
+  }
+
+  /* Handle stretches in sync with basket body */
+  .lcv-panel--one .lcv-basket-handle { animation: lcvHandleOne 8s var(--lcv-ease) infinite; }
+  .lcv-panel--two .lcv-basket-handle { animation: lcvHandleTwo 12s var(--lcv-ease) infinite; }
+  @keyframes lcvHandleOne {
+    0%, 100% { transform: scaleY(1); }
+    10%      { transform: scaleY(10.29); }
+    80%      { transform: scaleY(10.29); }
+    90%      { transform: scaleY(1); }
+  }
+  @keyframes lcvHandleTwo {
+    0%, 100% { transform: scaleY(1); }
+    7%       { transform: scaleY(10.29); }
+    35%      { transform: scaleY(10.29); }
+    42%      { transform: scaleY(1); }
+    55%      { transform: scaleY(1); }
+    62%      { transform: scaleY(10.29); }
+    88%      { transform: scaleY(10.29); }
+    95%      { transform: scaleY(1); }
+  }
+
+  /* Steam */
+  .lcv-panel--one .lcv-steam circle { animation: lcvSteamOne 8s ease-in-out infinite; }
+  .lcv-panel--two .lcv-steam circle { animation: lcvSteamTwo 12s ease-in-out infinite; }
+  .lcv-panel .lcv-steam circle:nth-child(2) { animation-delay: -0.4s; }
+  .lcv-panel .lcv-steam circle:nth-child(3) { animation-delay: -0.8s; }
+  @keyframes lcvSteamOne {
+    0%, 12%, 88%, 100% { opacity: 0; transform: translateY(0); }
+    25%, 70%           { opacity: 0.7; transform: translateY(-10px); }
+    82%                { opacity: 0; transform: translateY(-14px); }
+  }
+  @keyframes lcvSteamTwo {
+    0%, 9%, 42%, 55%, 92%, 100% { opacity: 0; transform: translateY(0); }
+    18%, 32%                    { opacity: 0.7; transform: translateY(-10px); }
+    68%, 85%                    { opacity: 0.7; transform: translateY(-10px); }
+  }
+
+  /* Timeline */
+  .lcv-timeline {
+    position: relative;
+    height: 34px;
+    margin-top: 16px;
+    padding: 0 6px;
+  }
+  .lcv-track {
+    position: absolute;
+    left: 6px; right: 6px; top: 9px;
+    height: 2px;
+    background: oklch(90% 0.01 248);
+    border-radius: 2px;
+  }
+  .lcv-marker {
+    position: absolute;
+    top: 18px;
+    left: var(--at);
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--text-light);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .lcv-marker::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -12px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: oklch(78% 0.02 248);
+    transform: translateX(-50%);
+  }
+  .lcv-dot {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 3px oklch(70% 0.12 78 / 0.18);
+    will-change: left;
+  }
+  .lcv-panel--one .lcv-dot { animation: lcvDotOne 8s linear infinite; }
+  .lcv-panel--two .lcv-dot { animation: lcvDotTwo 12s linear infinite; }
+  @keyframes lcvDotOne { 0% { left: 0; } 100% { left: calc(100% - 14px); } }
+  @keyframes lcvDotTwo { 0% { left: 0; } 100% { left: calc(100% - 14px); } }
+
+  .lcv-caption {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* Tablet (M): keep 2-column, compress */
+  @media (max-width: 900px) {
+    .lcv-grid { gap: 16px; }
+    .lcv-panel { padding: 20px 16px 16px; }
+    .lcv-stage { max-height: 240px; }
+    .lcv-chip { font-size: 11px; padding: 4px 10px; }
+  }
+  /* Mobile (S): stack, hide marker labels */
+  @media (max-width: 540px) {
+    .lcv-grid { grid-template-columns: 1fr; gap: 16px; }
+    .lcv-stage { max-height: 260px; }
+    .lcv-marker { font-size: 0; top: 14px; }
+    .lcv-marker::before { top: -8px; }
+    .lcv-timeline { height: 22px; }
+  }
+
+  /* Reduced motion fallback */
+  @media (prefers-reduced-motion: reduce) {
+    .lcv-basket,
+    .lcv-basket-handle,
+    .lcv-steam circle,
+    .lcv-dot { animation: none !important; }
+    .lcv-basket { transform: translateY(75px); }
+    .lcv-basket-handle { transform: scaleY(6.36); }
+    .lcv-dot { left: 0; }
+  }
 </style>
 </head>
 <body>
@@ -1034,12 +1238,12 @@
     <div class="stat-label">무인 연속 운전 가능</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">±<span class="stat-unit" style="font-size:28px">5초</span></div>
+    <div class="stat-num">1<span class="stat-unit">초 이내</span></div>
     <div class="stat-label">정밀 타이머 제어</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">2<span class="stat-unit">종</span></div>
-    <div class="stat-label">싱글 · 듀얼 모델</div>
+    <div class="stat-num">4<span class="stat-unit">종</span></div>
+    <div class="stat-label">원타임 · 투타임 라인업</div>
   </div>
 </div>
 
@@ -1055,7 +1259,7 @@
       <div class="feature-icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
       </div>
-      <div class="feature-title">완전 자동 리프트</div>
+      <div class="feature-title">완전자동 리프트</div>
       <div class="feature-desc">설정 시간이 되면 모터가 자동으로 바스켓을 기름에서 꺼냅니다. 더 이상 눈앞에서 지켜보지 않아도 됩니다.</div>
     </div>
     <div class="feature-card">
@@ -1101,6 +1305,7 @@
   <div class="how-content">
     <div class="section-label">작동 원리</div>
     <h2 class="section-title">버튼 하나로<br>완성되는 튀김</h2>
+    <p class="section-sub" style="margin-top:12px;">도입·운영 관련 상담 문의 <a href="tel:031-566-8882" style="color:var(--navy); font-weight:700; text-decoration:none; border-bottom:1px solid var(--gold);">031-566-8882</a></p>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
@@ -1112,15 +1317,15 @@
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-body">
-          <div class="step-title">프리셋 선택 & 시작</div>
-          <div class="step-desc">메뉴에 맞는 프리셋 번호(set 1~8)를 누르고 Start 버튼을 누릅니다. LCD에 남은 시간이 실시간 표시됩니다.</div>
+          <div class="step-title">프리셋 선택</div>
+          <div class="step-desc">1~8번 버튼을 누르면 해당 프리셋의 시간으로 바로 시작합니다. LCD에 남은 시간이 실시간 표시됩니다.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-body">
           <div class="step-title">자동 완료</div>
-          <div class="step-desc">타이머가 끝나면 모터가 자동으로 바스켓을 올립니다. 진동 알림으로 완료를 알려드립니다.</div>
+          <div class="step-desc">타이머가 끝나면 모터가 자동으로 바스켓을 올려 기름을 빼냅니다. 기름이 빠진 뒤 진동 알림으로 완료를 알려드립니다.</div>
         </div>
       </div>
       <div class="step">
@@ -1151,7 +1356,7 @@
     <div class="video-main">
       <div class="video-player-wrap">
         <iframe id="mainPlayer"
-          src="https://www.youtube.com/embed/VIDEO_ID_1?rel=0&modestbranding=1"
+          src="https://www.youtube.com/embed/MN3K8QJLfts?rel=0&modestbranding=1"
           title="남정 오토프라이 영상"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1160,53 +1365,75 @@
       </div>
       <div class="video-main-info">
         <div class="video-main-num" id="mainNum">01</div>
-        <div class="video-main-title" id="mainTitle">자동 튀김 작동 영상</div>
+        <div class="video-main-title" id="mainTitle">튀김기의 혁명</div>
       </div>
     </div>
 
     <div class="video-thumbs">
-      <div class="video-thumb active" data-id="VIDEO_ID_1" data-num="01" data-title="자동 튀김 작동 영상" onclick="switchVideo(this)">
+      <div class="video-thumb active" data-id="MN3K8QJLfts" data-num="01" data-title="튀김기의 혁명" onclick="switchVideo(this)">
         <div class="thumb-num">01</div>
         <div class="thumb-preview">
-          <img src="https://img.youtube.com/vi/VIDEO_ID_1/mqdefault.jpg" alt="영상 1" onerror="this.style.display='none'">
+          <img src="https://img.youtube.com/vi/MN3K8QJLfts/mqdefault.jpg" alt="튀김기의 혁명" onerror="this.style.display='none'">
           <div class="thumb-play">▶</div>
         </div>
         <div class="thumb-info">
-          <div class="thumb-title">자동 튀김 작동 영상</div>
-          <div class="thumb-desc">바스켓 자동 리프트 동작</div>
+          <div class="thumb-title">튀김기의 혁명</div>
+          <div class="thumb-desc">타임 오토 프라이 소개</div>
         </div>
       </div>
-      <div class="video-thumb" data-id="VIDEO_ID_2" data-num="02" data-title="컨트롤러 사용법" onclick="switchVideo(this)">
+      <div class="video-thumb" data-id="M4Bolq2H_HU" data-num="02" data-title="2가지 튀김을 한 번에" onclick="switchVideo(this)">
         <div class="thumb-num">02</div>
         <div class="thumb-preview">
-          <img src="https://img.youtube.com/vi/VIDEO_ID_2/mqdefault.jpg" alt="영상 2" onerror="this.style.display='none'">
+          <img src="https://img.youtube.com/vi/M4Bolq2H_HU/mqdefault.jpg" alt="2가지 튀김을 한 번에" onerror="this.style.display='none'">
           <div class="thumb-play">▶</div>
         </div>
         <div class="thumb-info">
-          <div class="thumb-title">컨트롤러 사용법</div>
-          <div class="thumb-desc">프리셋 설정 방법 안내</div>
+          <div class="thumb-title">2가지 튀김을 한 번에</div>
+          <div class="thumb-desc">동시 운영 시연</div>
         </div>
       </div>
-      <div class="video-thumb" data-id="VIDEO_ID_3" data-num="03" data-title="듀얼 모델 작동" onclick="switchVideo(this)">
+      <div class="video-thumb" data-id="z-_lJ4HlPnI" data-num="03" data-title="일반 튀김 요리법" onclick="switchVideo(this)">
         <div class="thumb-num">03</div>
         <div class="thumb-preview">
-          <img src="https://img.youtube.com/vi/VIDEO_ID_3/mqdefault.jpg" alt="영상 3" onerror="this.style.display='none'">
+          <img src="https://img.youtube.com/vi/z-_lJ4HlPnI/mqdefault.jpg" alt="일반 튀김 요리법" onerror="this.style.display='none'">
           <div class="thumb-play">▶</div>
         </div>
         <div class="thumb-info">
-          <div class="thumb-title">듀얼 모델 작동</div>
-          <div class="thumb-desc">2구 동시 운영 시연</div>
+          <div class="thumb-title">일반 튀김 요리법</div>
+          <div class="thumb-desc">기본 조리 가이드</div>
         </div>
       </div>
-      <div class="video-thumb" data-id="VIDEO_ID_4" data-num="04" data-title="설치 및 환경 구성" onclick="switchVideo(this)">
+      <div class="video-thumb" data-id="8zh_rtcNXhE" data-num="04" data-title="가루 치킨 요리" onclick="switchVideo(this)">
         <div class="thumb-num">04</div>
         <div class="thumb-preview">
-          <img src="https://img.youtube.com/vi/VIDEO_ID_4/mqdefault.jpg" alt="영상 4" onerror="this.style.display='none'">
+          <img src="https://img.youtube.com/vi/8zh_rtcNXhE/mqdefault.jpg" alt="가루 치킨 요리" onerror="this.style.display='none'">
           <div class="thumb-play">▶</div>
         </div>
         <div class="thumb-info">
-          <div class="thumb-title">설치 및 환경 구성</div>
-          <div class="thumb-desc">현장 설치 전 과정</div>
+          <div class="thumb-title">가루 치킨 요리</div>
+          <div class="thumb-desc">치킨 메뉴 응용</div>
+        </div>
+      </div>
+      <div class="video-thumb" data-id="JjxPG7tTMn4" data-num="05" data-title="점성 있는 튀김 요리법" onclick="switchVideo(this)">
+        <div class="thumb-num">05</div>
+        <div class="thumb-preview">
+          <img src="https://img.youtube.com/vi/JjxPG7tTMn4/mqdefault.jpg" alt="점성 있는 튀김 요리법" onerror="this.style.display='none'">
+          <div class="thumb-play">▶</div>
+        </div>
+        <div class="thumb-info">
+          <div class="thumb-title">점성 있는 튀김 요리법</div>
+          <div class="thumb-desc">양념·반죽류 대응</div>
+        </div>
+      </div>
+      <div class="video-thumb" data-id="UfePDuK6-F8" data-num="06" data-title="제품 설치와 구성" onclick="switchVideo(this)">
+        <div class="thumb-num">06</div>
+        <div class="thumb-preview">
+          <img src="https://img.youtube.com/vi/UfePDuK6-F8/mqdefault.jpg" alt="제품 설치와 구성" onerror="this.style.display='none'">
+          <div class="thumb-play">▶</div>
+        </div>
+        <div class="thumb-info">
+          <div class="thumb-title">제품 설치와 구성</div>
+          <div class="thumb-desc">현장 설치 과정</div>
         </div>
       </div>
     </div>
@@ -1242,42 +1469,134 @@
   <div class="section-label">제품 사양</div>
   <h2 class="section-title">모델 & 제원</h2>
   <p class="section-sub">매장 규모와 메뉴 구성에 맞는 모델을 선택하세요.</p>
+
+  <div class="lift-cycle-viz" aria-label="원타임과 투타임 운전 모드 비교 다이어그램">
+    <div class="lcv-header">
+      <div class="section-label">한눈에 보는 운전 모드</div>
+      <p class="lcv-intro">원타임은 1회, 투타임은 2회 자동 리프트 사이클로 동작합니다.</p>
+    </div>
+    <div class="lcv-grid">
+      <div class="lcv-panel lcv-panel--one">
+        <div class="lcv-chip">원타임</div>
+        <svg class="lcv-stage" viewBox="0 0 200 240" role="img" aria-label="원타임: 바스켓이 1회 자동 하강·상승하는 사이클">
+          <line class="lcv-rail" x1="40" y1="10" x2="40" y2="220"/>
+          <line class="lcv-rail" x1="160" y1="10" x2="160" y2="220"/>
+          <rect class="lcv-tank" x="30" y="100" width="140" height="120" rx="8"/>
+          <rect class="lcv-oil" x="32" y="112" width="136" height="106" rx="6"/>
+          <line class="lcv-oil-surface" x1="34" y1="114" x2="166" y2="114"/>
+          <g class="lcv-steam">
+            <circle cx="72" cy="108" r="3"/>
+            <circle cx="100" cy="104" r="4"/>
+            <circle cx="128" cy="108" r="3"/>
+          </g>
+          <rect class="lcv-basket-grip" x="86" y="2" width="28" height="6" rx="2"/>
+          <line class="lcv-basket-handle" x1="100" y1="8" x2="100" y2="22" vector-effect="non-scaling-stroke"/>
+          <g class="lcv-basket">
+            <rect class="lcv-basket-body" x="62" y="22" width="76" height="50" rx="4"/>
+            <line class="lcv-basket-mesh" x1="62" y1="34" x2="138" y2="34"/>
+            <line class="lcv-basket-mesh" x1="62" y1="46" x2="138" y2="46"/>
+            <line class="lcv-basket-mesh" x1="62" y1="58" x2="138" y2="58"/>
+            <line class="lcv-basket-mesh" x1="80" y1="22" x2="80" y2="72"/>
+            <line class="lcv-basket-mesh" x1="100" y1="22" x2="100" y2="72"/>
+            <line class="lcv-basket-mesh" x1="120" y1="22" x2="120" y2="72"/>
+          </g>
+        </svg>
+        <div class="lcv-timeline" aria-hidden="true">
+          <div class="lcv-track"></div>
+          <span class="lcv-marker" style="--at:10%">하강</span>
+          <span class="lcv-marker" style="--at:45%">조리</span>
+          <span class="lcv-marker" style="--at:85%">상승</span>
+          <div class="lcv-dot"></div>
+        </div>
+        <div class="lcv-caption">1회 자동 리프트 사이클 · 하강 → 조리 → 상승</div>
+      </div>
+
+      <div class="lcv-panel lcv-panel--two">
+        <div class="lcv-chip">투타임</div>
+        <svg class="lcv-stage" viewBox="0 0 200 240" role="img" aria-label="투타임: 바스켓이 1차 조리 후 휴지를 거쳐 2차 조리로 이어지는 2회 사이클">
+          <line class="lcv-rail" x1="40" y1="10" x2="40" y2="220"/>
+          <line class="lcv-rail" x1="160" y1="10" x2="160" y2="220"/>
+          <rect class="lcv-tank" x="30" y="100" width="140" height="120" rx="8"/>
+          <rect class="lcv-oil" x="32" y="112" width="136" height="106" rx="6"/>
+          <line class="lcv-oil-surface" x1="34" y1="114" x2="166" y2="114"/>
+          <g class="lcv-steam">
+            <circle cx="72" cy="108" r="3"/>
+            <circle cx="100" cy="104" r="4"/>
+            <circle cx="128" cy="108" r="3"/>
+          </g>
+          <rect class="lcv-basket-grip" x="86" y="2" width="28" height="6" rx="2"/>
+          <line class="lcv-basket-handle" x1="100" y1="8" x2="100" y2="22" vector-effect="non-scaling-stroke"/>
+          <g class="lcv-basket">
+            <rect class="lcv-basket-body" x="62" y="22" width="76" height="50" rx="4"/>
+            <line class="lcv-basket-mesh" x1="62" y1="34" x2="138" y2="34"/>
+            <line class="lcv-basket-mesh" x1="62" y1="46" x2="138" y2="46"/>
+            <line class="lcv-basket-mesh" x1="62" y1="58" x2="138" y2="58"/>
+            <line class="lcv-basket-mesh" x1="80" y1="22" x2="80" y2="72"/>
+            <line class="lcv-basket-mesh" x1="100" y1="22" x2="100" y2="72"/>
+            <line class="lcv-basket-mesh" x1="120" y1="22" x2="120" y2="72"/>
+          </g>
+        </svg>
+        <div class="lcv-timeline" aria-hidden="true">
+          <div class="lcv-track"></div>
+          <span class="lcv-marker" style="--at:18%">1차</span>
+          <span class="lcv-marker" style="--at:48%">휴지</span>
+          <span class="lcv-marker" style="--at:78%">2차</span>
+          <div class="lcv-dot"></div>
+        </div>
+        <div class="lcv-caption">2회 자동 리프트 사이클 · 1차 조리 → 휴지 → 2차 조리</div>
+      </div>
+    </div>
+  </div>
+
   <div class="specs-layout">
     <div>
       <table class="spec-table">
         <tr><td>브랜드</td><td>남정 (NAMJUNG)</td></tr>
         <tr><td>모델명</td><td>Time Auto Fry</td></tr>
-        <tr><td>구성</td><td>싱글 / 듀얼 (2구) 선택</td></tr>
+        <tr><td>구성</td><td>원타임 1구 · 2구 (1회 리프트) / 투타임 1구 · 2구 (2회 리프트)</td></tr>
         <tr><td>제어방식</td><td>디지털 타이머 자동 제어</td></tr>
         <tr><td>프리셋</td><td>8개 메모리 저장 (set 1~8)</td></tr>
         <tr><td>조작</td><td>10초 / 30초 / 1분 / 5분 단위 설정</td></tr>
         <tr><td>알림</td><td>진동 알림 (vib ON/OFF)</td></tr>
-        <tr><td>바스켓</td><td>대형 + 소형 2단 구성</td></tr>
+        <tr><td>바스켓(별도구매)</td><td>대형 + 소형 2단 구성 · 용도에 맞추어 제작 가능</td></tr>
         <tr><td>본체 재질</td><td>스테인리스 스틸 (SUS304)</td></tr>
-        <tr><td>A/S</td><td>031-566-8862</td></tr>
+        <tr><td>A/S</td><td>031-566-8882</td></tr>
       </table>
     </div>
     <div class="model-cards">
       <div class="section-label" style="margin-bottom:20px;">모델 선택 가이드</div>
-      <div class="model-card featured">
+      <div class="model-card">
+        <div class="model-badge">1구</div>
+        <div class="model-info">
+          <div class="model-name">원타임 1구</div>
+          <div class="model-detail">바스켓 1구 · 1회 자동 리프트 사이클</div>
+        </div>
+      </div>
+      <div class="model-card">
         <div class="model-badge">2구</div>
         <div class="model-info">
-          <div class="model-name">듀얼 모델 (추천)</div>
-          <div class="model-detail">바스켓 2개 동시 운영 · 피크타임 대응 · 중대형 매장 최적</div>
+          <div class="model-name">원타임 2구</div>
+          <div class="model-detail">바스켓 2구 · 1회 자동 리프트 사이클</div>
         </div>
-        <div class="model-tag">추천</div>
       </div>
       <div class="model-card">
         <div class="model-badge">1구</div>
         <div class="model-info">
-          <div class="model-name">싱글 모델</div>
-          <div class="model-detail">소규모 매장 · 저예산 도입 · 공간 절약형</div>
+          <div class="model-name">투타임 1구</div>
+          <div class="model-detail">바스켓 1구 · 2회 자동 리프트 사이클</div>
+        </div>
+      </div>
+      <div class="model-card">
+        <div class="model-badge">2구</div>
+        <div class="model-info">
+          <div class="model-name">투타임 2구</div>
+          <div class="model-detail">바스켓 2구 · 2회 자동 리프트 사이클</div>
         </div>
       </div>
       <div style="background: oklch(96% 0.008 78); border-radius: 8px; padding: 24px 24px; border-left: 4px solid var(--gold);">
         <div style="font-size:14px; font-weight:700; color:var(--text-dark); margin-bottom:8px;">💡 도입 전 확인사항</div>
         <div style="font-size:13px; color:var(--text-mid); line-height:1.8; font-weight:300;">
-          현재 사용 중인 튀김기에 장착하는 방식입니다. 기존 튀김기 규격에 맞는 모델 확인 후 주문을 권장합니다. 전문 기사가 현장 방문 설치합니다.
+          기본 택배 방식으로 발송되며, 필요 시 전문 기사가 현장 방문하여 설치해 드립니다. 린라이 튀김기 전용이며, 타사 튀김기는 사전 미팅 후 설치 가능합니다.
         </div>
       </div>
     </div>
@@ -1299,12 +1618,12 @@
       <div class="contact-card">
         <span class="contact-icon">📞</span>
         <div class="contact-type">전화 상담</div>
-        <a href="tel:031-566-8862" class="contact-value">031-566-8862</a>
+        <a href="tel:031-566-8882" class="contact-value">031-566-8882</a>
       </div>
       <div class="contact-card">
         <span class="contact-icon">🏭</span>
         <div class="contact-type">현장 시연</div>
-        <a href="tel:031-566-8862" class="contact-value">방문 예약하기</a>
+        <a href="tel:031-566-8882" class="contact-value">방문 예약하기</a>
       </div>
     </div>
   </div>
@@ -1313,7 +1632,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">남정 타임 오토프라이 · NAMJUNG TIME AUTO FRY</div>
-  <div class="footer-copy">© 2026 NAMJUNG. All rights reserved. | A/S: 031-566-8862</div>
+  <div class="footer-copy">© 2026 NAMJUNG. All rights reserved. | A/S: 031-566-8882</div>
 </footer>
 
 <!-- INQUIRY FORM OVERLAY -->
@@ -1344,12 +1663,20 @@
         <label class="form-label">관심 모델 <span class="required">*</span></label>
         <div class="radio-group">
           <label class="radio-item">
-            <input type="radio" name="model" value="싱글 (1구)" required>
-            <span class="radio-label">싱글 (1구)</span>
+            <input type="radio" name="model" value="원타임 1구" required>
+            <span class="radio-label">원타임 1구</span>
           </label>
           <label class="radio-item">
-            <input type="radio" name="model" value="듀얼 (2구)" required>
-            <span class="radio-label">듀얼 (2구)</span>
+            <input type="radio" name="model" value="원타임 2구" required>
+            <span class="radio-label">원타임 2구</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="model" value="투타임 1구" required>
+            <span class="radio-label">투타임 1구</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="model" value="투타임 2구" required>
+            <span class="radio-label">투타임 2구</span>
           </label>
           <label class="radio-item">
             <input type="radio" name="model" value="미정 / 상담 필요" required>
@@ -1368,7 +1695,7 @@
     <div class="form-success" id="formSuccess">
       <div class="success-icon">✓</div>
       <div class="success-title">신청이 완료되었습니다!</div>
-      <div class="success-desc">1~2 영업일 내에 담당자가 연락드리겠습니다.<br>급한 문의는 <strong>031-566-8862</strong>로 연락주세요.</div>
+      <div class="success-desc">1~2 영업일 내에 담당자가 연락드리겠습니다.<br>급한 문의는 <strong>031-566-8882</strong>로 연락주세요.</div>
       <button class="btn-primary" style="margin-top:24px;" onclick="closeFormModal()">닫기</button>
     </div>
   </div>
@@ -1425,12 +1752,12 @@
         form.style.display = 'none';
         document.getElementById('formSuccess').classList.add('show');
       } else {
-        alert('전송에 실패했습니다. 잠시 후 다시 시도하거나 전화로 문의해 주세요. (031-566-8862)');
+        alert('전송에 실패했습니다. 잠시 후 다시 시도하거나 전화로 문의해 주세요. (031-566-8882)');
         btn.disabled = false;
         btn.textContent = '상담 신청하기';
       }
     } catch {
-      alert('네트워크 오류가 발생했습니다. 031-566-8862로 직접 연락주세요.');
+      alert('네트워크 오류가 발생했습니다. 031-566-8882로 직접 연락주세요.');
       btn.disabled = false;
       btn.textContent = '상담 신청하기';
     }
@@ -1463,6 +1790,22 @@
     el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
     observer.observe(el);
   });
+
+  // Lift-cycle viz: pause animations when offscreen to save battery/CPU
+  (function () {
+    const panels = document.querySelectorAll('.lcv-panel');
+    if (!panels.length || !('IntersectionObserver' in window)) return;
+    const targets = '.lcv-basket, .lcv-basket-handle, .lcv-steam circle, .lcv-dot';
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        const state = e.isIntersecting ? 'running' : 'paused';
+        e.target.querySelectorAll(targets).forEach(el => {
+          el.style.animationPlayState = state;
+        });
+      });
+    }, { threshold: 0.1 });
+    panels.forEach(p => io.observe(p));
+  })();
 </script>
 
 </body>
